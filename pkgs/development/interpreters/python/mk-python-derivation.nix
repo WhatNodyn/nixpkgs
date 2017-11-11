@@ -60,11 +60,13 @@ python.stdenv.mkDerivation (builtins.removeAttrs attrs [
 
   name = namePrefix + name;
 
-
-  buildInputs = [ wrapPython ] ++ buildInputs ++ pythonPath
-    ++ [ (ensureNewerSourcesHook { year = "1980"; }) ]
+  buildInputs = ([ python (ensureNewerSourcesHook { year = "1980"; }) ]
     ++ (lib.optional (lib.hasSuffix "zip" attrs.src.name or "") unzip)
-    ++ lib.optionals doCheck checkInputs;
+    ++ lib.optionals doCheck checkInputs
+    ++ lib.optional (!dontWrapPythonPrograms) wrapPython
+    ++ lib.optional catchConflicts setuptools
+    ++ buildInputs
+  );
 
   # propagate python/setuptools to active setup-hook in nix-shell
   propagatedBuildInputs = propagatedBuildInputs ++ [ python setuptools ];
