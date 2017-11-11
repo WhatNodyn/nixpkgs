@@ -1,4 +1,4 @@
-/* Generic builder for Python packages that come without a setup.py. */
+# Generic builder.
 
 { lib
 , python
